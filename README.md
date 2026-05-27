@@ -99,6 +99,11 @@ The middleware looks up the user by ID and attaches it to the request.
 
 Base URL: `/api/v1`
 
+Interactive Swagger docs are available after starting the server:
+
+- `http://localhost:4000/docs`
+- `http://localhost:4000/docs.json`
+
 ### Health
 
 `GET /health`
