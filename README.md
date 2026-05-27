@@ -104,6 +104,14 @@ Interactive Swagger docs are available after starting the server:
 - `http://localhost:4000/docs`
 - `http://localhost:4000/docs.json`
 
+Use the Swagger page to inspect every endpoint, view request/response schemas, and send test requests from the browser. For protected routes, first call `POST /api/v1/users`, copy the returned `data.token`, click **Authorize** in Swagger, and paste the token value. Swagger will send it as:
+
+```http
+Authorization: Bearer <token>
+```
+
+The raw OpenAPI document at `/docs.json` can also be imported into Postman or another API client.
+
 ### Health
 
 `GET /health`
