@@ -253,12 +253,25 @@ Suitable platforms include Render, Railway, and Fly.io.
 
 1. Provision a MySQL database.
 2. Set all variables from `.env.example` in the platform dashboard.
-3. Build command: `npm install && npm run build`
-4. Release/migration command: `npm run migrate`
-5. Start command: `npm start`
+3. For hosted MySQL providers that give a single connection string, set `DATABASE_URL`.
+4. Build command: `npm install && npm run build`
+5. Release/migration command: `npm run migrate`
+6. Start command: `npm start`
 
 Expected deployed URL format:
 
 ```txt
 https://<candidate-name>-lendsqr-be-test.<platform-domain>
+```
+
+For Render blueprints, `render.yaml` is configured with the service name:
+
+```txt
+bhnprksh222-lendsqr-be-test
+```
+
+That gives this URL format after deployment:
+
+```txt
+https://bhnprksh222-lendsqr-be-test.onrender.com
 ```

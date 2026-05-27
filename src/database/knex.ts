@@ -10,6 +10,11 @@ const requiredEnv = (value: string | undefined, name: string): string => {
   return value;
 };
 
+const mysqlConnection = (
+  url: string | undefined,
+  fallback: Knex.MySqlConnectionConfig,
+): string | Knex.MySqlConnectionConfig => url || fallback;
+
 const config: { [key: string]: Knex.Config } = {
   development: {
     client: "mysql2",
@@ -42,16 +47,16 @@ const config: { [key: string]: Knex.Config } = {
   },
   production: {
     client: "mysql2",
-    connection: {
+    connection: mysqlConnection(process.env.DATABASE_URL, {
       host: process.env.DB_HOST ?? "localhost",
       port: Number(process.env.DB_PORT || 3306),
       user: requiredEnv(process.env.DB_USER, "DB_USER"),
       password: requiredEnv(process.env.DB_PASSWORD, "DB_PASSWORD"),
       database: requiredEnv(process.env.DB_NAME, "DB_NAME"),
-    },
+    }),
     migrations: {
-      directory: "./src/database/migrations",
-      extension: "ts",
+      directory: "./dist/database/migrations",
+      extension: "js",
     },
   },
 };

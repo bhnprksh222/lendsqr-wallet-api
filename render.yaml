@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: bhnprksh222-lendsqr-be-test
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    preDeployCommand: npm run migrate
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ADJUTOR_BASE_URL
+        value: https://api.adjutor.io
+      - key: ADJUTOR_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
