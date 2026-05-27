@@ -194,6 +194,22 @@ describe("wallet API", () => {
     expect(response.status).toBe(401);
   });
 
+  it("rejects missing auth", async () => {
+    const response = await request(app).get("/api/v1/wallets/me");
+
+    expect(response.status).toBe(401);
+  });
+
+  it("rejects invalid wallet amount payloads", async () => {
+    const response = await request(app)
+      .post("/api/v1/wallets/fund")
+      .set(auth)
+      .send({ amount: 0 });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Validation failed");
+  });
+
   it("lists transactions", async () => {
     jest.mocked(transactionService.getTransactionsForUser).mockResolvedValue([
       {

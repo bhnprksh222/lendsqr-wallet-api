@@ -26,7 +26,42 @@ Production-minded MVP wallet service for the Lendsqr backend engineering assessm
 ```mermaid
 erDiagram
   USERS ||--|| WALLETS : owns
-  WALLETS ||--o{ TRANSACTIONS : has
+  WALLETS ||--o{ TRANSACTIONS : records
+
+  USERS {
+    uuid id PK
+    string first_name
+    string last_name
+    string email UK
+    string phone UK
+    string bvn
+    string password_hash
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  WALLETS {
+    uuid id PK
+    uuid user_id FK
+    decimal balance
+    string currency
+    timestamp created_at
+    timestamp updated_at
+  }
+
+  TRANSACTIONS {
+    uuid id PK
+    uuid wallet_id FK
+    uuid sender_wallet_id FK
+    uuid receiver_wallet_id FK
+    enum type
+    enum status
+    decimal amount
+    string reference
+    json metadata
+    timestamp created_at
+    timestamp updated_at
+  }
 ```
 
 ## Database Tables
@@ -190,11 +225,27 @@ Requires `Authorization` header.
 ## Architecture Decisions
 
 - Controllers are thin and delegate business rules to module services.
-- Wallet balance mutations run inside Knex transactions for atomicity.
+- Wallet balance mutations run inside Knex transactions for atomicity and use row-level `forUpdate` locks during balance changes.
 - Transfers create debit and credit transaction rows with a shared reference.
 - Joi middleware validates and strips unknown payload fields before controllers run.
 - Adjutor integration is isolated in `src/services/adjutor.service.ts`.
+- The wallet ledger uses an object-oriented `WalletLedgerService` class to encapsulate balance mutation rules, transaction creation, and private wallet lookup helpers.
 - Tests mock service boundaries for fast API coverage without requiring a live MySQL instance.
+
+## Assessment Coverage
+
+- Code quality and DRY: shared middleware handles auth, validation, and errors; wallet balance rules are centralized in `WalletLedgerService`.
+- Attention to detail: protected routes use authenticated `/me` semantics, responses avoid exposing `password_hash`, and transaction references are indexed but not globally unique so transfer ledger rows can share one reference.
+- Best-practice architecture: feature modules keep controllers, services, routes, and validation close to the resource they serve.
+- Unit/API testing: Jest + Supertest cover account creation, wallet auto-creation, funding, transfer, withdrawal, transactions, blacklist rejection, duplicate users, invalid auth, missing auth, insufficient funds, and invalid payloads.
+- Commit history: commits are split by setup, schema, API implementation, tests, documentation, Swagger docs, and fixes.
+- README quality: setup, environment variables, scripts, ER diagram, API documentation, Swagger usage, architecture decisions, and deployment notes are included.
+- Folder organization: `src/config`, `src/database`, `src/middlewares`, `src/modules`, `src/services`, `src/utils`, and `tests` separate concerns clearly.
+- Naming and conventions: route handlers, services, validation schemas, and database fields use consistent resource-oriented names.
+- Semantic paths: routes use `/api/v1/users`, `/api/v1/users/me`, `/api/v1/wallets/me`, `/api/v1/wallets/fund`, `/api/v1/wallets/transfer`, `/api/v1/wallets/withdraw`, and `/api/v1/transactions`.
+- OOP usage: `AppError` models HTTP-aware application errors, and `WalletLedgerService` encapsulates wallet ledger behavior with public methods and private helpers.
+- Database design: one user owns one wallet, wallets own many transactions, monetary values use decimal columns, and lookup/uniqueness constraints are defined in migrations.
+- Transaction scoping: funding, withdrawal, and transfer each run in a single Knex transaction; transfer debits, credits, and transaction logs commit or roll back together.
 
 ## Deployment Guide
 
