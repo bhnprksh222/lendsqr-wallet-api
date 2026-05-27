@@ -154,7 +154,7 @@ Requires `Authorization` header.
 ```json
 {
   "amount": 5000,
-  "reference": "optional-reference"
+  "reference": "wallet-ref-001"
 }
 ```
 
@@ -166,7 +166,7 @@ Requires `Authorization` header.
 {
   "receiverUserId": "receiver-user-uuid",
   "amount": 1500,
-  "reference": "optional-reference"
+  "reference": "transfer-ref-001"
 }
 ```
 
@@ -177,7 +177,7 @@ Requires `Authorization` header.
 ```json
 {
   "amount": 1000,
-  "reference": "optional-reference"
+  "reference": "withdrawal-ref-001"
 }
 ```
 

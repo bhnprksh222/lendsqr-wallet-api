@@ -90,7 +90,11 @@ export const openApiSpec = {
         required: ["amount"],
         properties: {
           amount: { type: "number", minimum: 0.01, example: 5000 },
-          reference: { type: "string", example: "optional-reference" },
+          reference: {
+            type: "string",
+            description: "Optional transaction reference. Omit it to let the API generate one.",
+            example: "wallet-ref-001",
+          },
         },
       },
       TransferRequest: {
@@ -99,7 +103,11 @@ export const openApiSpec = {
         properties: {
           receiverUserId: { type: "string", format: "uuid" },
           amount: { type: "number", minimum: 0.01, example: 1500 },
-          reference: { type: "string", example: "optional-reference" },
+          reference: {
+            type: "string",
+            description: "Optional transaction reference shared by the debit and credit entries.",
+            example: "transfer-ref-001",
+          },
         },
       },
     },

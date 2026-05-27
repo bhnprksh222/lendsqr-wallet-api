@@ -19,7 +19,8 @@ export async function up(knex: Knex): Promise<void> {
 
     table.decimal("amount", 14, 2).notNullable();
 
-    table.string("reference").notNullable().unique();
+    table.string("reference").notNullable();
+    table.index(["reference"]);
 
     table.uuid("sender_wallet_id").nullable();
     table.uuid("receiver_wallet_id").nullable();
