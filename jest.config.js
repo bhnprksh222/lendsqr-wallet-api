@@ -4,4 +4,7 @@ module.exports = {
   testEnvironment: "node",
   clearMocks: true,
   testMatch: ["**/tests/**/*.test.ts"],
+  transform: {
+    "^.+\\.tsx?$": ["ts-jest", { tsconfig: "tsconfig.test.json" }],
+  },
 };
