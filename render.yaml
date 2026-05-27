@@ -3,8 +3,7 @@ services:
     name: bhnprksh222-lendsqr-be-test
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build
-    preDeployCommand: npm run migrate
+    buildCommand: npm install && npm run build && npm run migrate
     startCommand: npm start
     healthCheckPath: /health
     envVars:
