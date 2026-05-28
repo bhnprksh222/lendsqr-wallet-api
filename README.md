@@ -136,6 +136,7 @@ Base URL: `/api/v1`
 
 Interactive Swagger docs are available after starting the server:
 
+- `http://localhost:4000` redirects to `/docs`
 - `http://localhost:4000/docs`
 - `http://localhost:4000/docs.json`
 

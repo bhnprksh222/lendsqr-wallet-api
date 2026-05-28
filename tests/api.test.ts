@@ -45,6 +45,13 @@ beforeEach(() => {
 });
 
 describe("wallet API", () => {
+  it("redirects the root path to Swagger docs", async () => {
+    const response = await request(app).get("/");
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/docs");
+  });
+
   it("creates an account and returns a faux token with an auto-created wallet", async () => {
     jest.mocked(adjutorService.isBlacklisted).mockResolvedValue(false);
     jest.mocked(userService.createUser).mockResolvedValue({
