@@ -69,7 +69,7 @@ export const createUser = async (
       id: walletId,
       user_id: userId,
       balance: 0,
-      currency: "NGN",
+      currency: "USD",
     });
 
     const user = await trx<UserRecord>(usersTable).where({ id: userId }).first();

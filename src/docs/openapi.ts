@@ -56,7 +56,7 @@ export const openApiSpec = {
           id: { type: "string", format: "uuid" },
           user_id: { type: "string", format: "uuid" },
           balance: { type: "string", example: "5000.00" },
-          currency: { type: "string", example: "NGN" },
+          currency: { type: "string", example: "USD" },
         },
       },
       Transaction: {

@@ -67,7 +67,7 @@ erDiagram
 ## Database Tables
 
 - `users`: `id`, `first_name`, `last_name`, `email`, `phone`, `bvn`, `password_hash`, `created_at`, `updated_at`
-- `wallets`: `id`, `user_id`, `balance`, `currency`, `created_at`, `updated_at`
+- `wallets`: `id`, `user_id`, `balance`, `currency` defaulting to `USD`, `created_at`, `updated_at`
 - `transactions`: `id`, `wallet_id`, `sender_wallet_id`, `receiver_wallet_id`, `type`, `status`, `amount`, `reference`, `metadata`, `created_at`, `updated_at`
 
 ## Local Setup

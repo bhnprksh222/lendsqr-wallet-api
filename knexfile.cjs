@@ -48,6 +48,7 @@ module.exports = {
     migrations: {
       directory: "./dist/database/migrations",
       extension: "js",
+      loadExtensions: [".js"],
     },
   },
 };

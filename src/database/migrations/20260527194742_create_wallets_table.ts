@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
     table.uuid("user_id").notNullable().unique();
 
     table.decimal("balance", 14, 2).notNullable().defaultTo(0.0);
-    table.string("currency").notNullable().defaultTo("NGN");
+    table.string("currency").notNullable().defaultTo("USD");
 
     table.timestamps(true, true);
   });
