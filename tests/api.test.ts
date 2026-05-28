@@ -218,23 +218,69 @@ describe("wallet API", () => {
   });
 
   it("lists transactions", async () => {
-    jest.mocked(transactionService.getTransactionsForUser).mockResolvedValue([
-      {
-        id: "44444444-4444-4444-8444-444444444444",
-        wallet_id: wallet.id,
-        type: "funding",
-        status: "successful",
-        amount: "500.00",
-        reference: "ref-1",
-        sender_wallet_id: null,
-        receiver_wallet_id: wallet.id,
-        metadata: null,
+    jest.mocked(transactionService.getTransactionsForUser).mockResolvedValue({
+      data: [
+        {
+          id: "44444444-4444-4444-8444-444444444444",
+          wallet_id: wallet.id,
+          type: "funding",
+          status: "successful",
+          amount: "500.00",
+          reference: "ref-1",
+          sender_wallet_id: null,
+          receiver_wallet_id: wallet.id,
+          metadata: null,
+        },
+      ],
+      meta: {
+        page: 1,
+        limit: 20,
+        total: 1,
+        totalPages: 1,
       },
-    ]);
+    });
 
     const response = await request(app).get("/api/v1/transactions").set(auth);
 
     expect(response.status).toBe(200);
     expect(response.body.data).toHaveLength(1);
+    expect(response.body.meta.total).toBe(1);
+    expect(transactionService.getTransactionsForUser).toHaveBeenCalledWith(user.id, {
+      page: 1,
+      limit: 20,
+      type: undefined,
+      status: undefined,
+    });
+  });
+
+  it("supports transaction pagination and filters", async () => {
+    jest.mocked(transactionService.getTransactionsForUser).mockResolvedValue({
+      data: [],
+      meta: {
+        page: 2,
+        limit: 5,
+        total: 0,
+        totalPages: 1,
+      },
+    });
+
+    const response = await request(app)
+      .get("/api/v1/transactions?page=2&limit=5&type=funding&status=successful")
+      .set(auth);
+
+    expect(response.status).toBe(200);
+    expect(transactionService.getTransactionsForUser).toHaveBeenCalledWith(user.id, {
+      page: 2,
+      limit: 5,
+      type: "funding",
+      status: "successful",
+    });
+  });
+
+  it("rejects invalid transaction filters", async () => {
+    const response = await request(app).get("/api/v1/transactions?type=bad").set(auth);
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Invalid transaction type filter");
   });
 });

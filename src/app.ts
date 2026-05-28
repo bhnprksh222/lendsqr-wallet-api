@@ -7,6 +7,7 @@ import transactionRoutes from "./modules/transactions/transaction.routes";
 import userRoutes from "./modules/users/user.routes";
 import walletRoutes from "./modules/wallets/wallet.routes";
 import { notFoundHandler } from "./middlewares/error.middleware";
+import { checkDatabaseReadiness } from "./services/health.service";
 
 const app = express();
 
@@ -29,6 +30,18 @@ app.get("/health", (_req, res) => {
     status: "ok",
     service: "lendsqr-wallet-api",
   });
+});
+
+app.get("/ready", async (_req, res, next) => {
+  try {
+    await checkDatabaseReadiness();
+    res.status(200).json({
+      status: "ready",
+      database: "ok",
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.use("/api/v1/users", userRoutes);

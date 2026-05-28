@@ -154,6 +154,12 @@ The raw OpenAPI document at `/docs.json` can also be imported into Postman or an
 
 Returns service status.
 
+### Readiness
+
+`GET /ready`
+
+Checks database connectivity and returns readiness for deployed environments.
+
 ### Create User
 
 `POST /api/v1/users`
@@ -223,11 +229,21 @@ Requires `Authorization` header.
 
 Requires `Authorization` header.
 
+Supports optional query parameters:
+
+- `page` - positive integer, defaults to `1`
+- `limit` - positive integer capped at `100`, defaults to `20`
+- `type` - one of `funding`, `transfer`, `withdrawal`
+- `status` - one of `pending`, `successful`, `failed`
+
 ## Architecture Decisions
 
 - Controllers are thin and delegate business rules to module services.
 - Wallet balance mutations run inside Knex transactions for atomicity and use row-level `forUpdate` locks during balance changes.
 - Transfers create debit and credit transaction rows with a shared reference.
+- Transaction history is paginated and can be filtered by type/status.
+- `/ready` checks database connectivity separately from the lightweight `/health` endpoint.
+- Production 500 responses stay generic while server logs retain the underlying error details.
 - Joi middleware validates and strips unknown payload fields before controllers run.
 - Adjutor integration is isolated in `src/services/adjutor.service.ts`.
 - The wallet ledger uses an object-oriented `WalletLedgerService` class to encapsulate balance mutation rules, transaction creation, and private wallet lookup helpers.

@@ -129,6 +129,23 @@ export const openApiSpec = {
         },
       },
     },
+    "/ready": {
+      get: {
+        tags: ["Health"],
+        summary: "Check API and database readiness",
+        responses: {
+          "200": {
+            description: "Service and database are ready",
+            content: {
+              "application/json": {
+                example: { status: "ready", database: "ok" },
+              },
+            },
+          },
+          "500": { description: "Database readiness check failed" },
+        },
+      },
+    },
     "/api/v1/users": {
       post: {
         tags: ["Users"],
@@ -276,6 +293,28 @@ export const openApiSpec = {
         tags: ["Transactions"],
         summary: "List authenticated user's transactions",
         security: [{ bearerAuth: [] }],
+        parameters: [
+          {
+            name: "page",
+            in: "query",
+            schema: { type: "integer", minimum: 1, default: 1 },
+          },
+          {
+            name: "limit",
+            in: "query",
+            schema: { type: "integer", minimum: 1, maximum: 100, default: 20 },
+          },
+          {
+            name: "type",
+            in: "query",
+            schema: { type: "string", enum: ["funding", "transfer", "withdrawal"] },
+          },
+          {
+            name: "status",
+            in: "query",
+            schema: { type: "string", enum: ["pending", "successful", "failed"] },
+          },
+        ],
         responses: {
           "200": {
             description: "Transaction list",
@@ -288,11 +327,21 @@ export const openApiSpec = {
                       type: "array",
                       items: { $ref: "#/components/schemas/Transaction" },
                     },
+                    meta: {
+                      type: "object",
+                      properties: {
+                        page: { type: "integer", example: 1 },
+                        limit: { type: "integer", example: 20 },
+                        total: { type: "integer", example: 42 },
+                        totalPages: { type: "integer", example: 3 },
+                      },
+                    },
                   },
                 },
               },
             },
           },
+          "400": { description: "Invalid transaction filter" },
           "401": { description: "Invalid auth token" },
         },
       },
