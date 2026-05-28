@@ -249,46 +249,8 @@ Supports optional query parameters:
 - The wallet ledger uses an object-oriented `WalletLedgerService` class to encapsulate balance mutation rules, transaction creation, and private wallet lookup helpers.
 - Tests mock service boundaries for fast API coverage without requiring a live MySQL instance.
 
-## Assessment Coverage
+## Deployed API
 
-- Code quality and DRY: shared middleware handles auth, validation, and errors; wallet balance rules are centralized in `WalletLedgerService`.
-- Attention to detail: protected routes use authenticated `/me` semantics, responses avoid exposing `password_hash`, and transaction references are indexed but not globally unique so transfer ledger rows can share one reference.
-- Best-practice architecture: feature modules keep controllers, services, routes, and validation close to the resource they serve.
-- Unit/API testing: Jest + Supertest cover account creation, wallet auto-creation, funding, transfer, withdrawal, transactions, blacklist rejection, duplicate users, invalid auth, missing auth, insufficient funds, and invalid payloads.
-- Commit history: commits are split by setup, schema, API implementation, tests, documentation, Swagger docs, and fixes.
-- README quality: setup, environment variables, scripts, ER diagram, API documentation, Swagger usage, architecture decisions, and deployment notes are included.
-- Folder organization: `src/config`, `src/database`, `src/middlewares`, `src/modules`, `src/services`, `src/utils`, and `tests` separate concerns clearly.
-- Naming and conventions: route handlers, services, validation schemas, and database fields use consistent resource-oriented names.
-- Semantic paths: routes use `/api/v1/users`, `/api/v1/users/me`, `/api/v1/wallets/me`, `/api/v1/wallets/fund`, `/api/v1/wallets/transfer`, `/api/v1/wallets/withdraw`, and `/api/v1/transactions`.
-- OOP usage: `AppError` models HTTP-aware application errors, and `WalletLedgerService` encapsulates wallet ledger behavior with public methods and private helpers.
-- Database design: one user owns one wallet, wallets own many transactions, monetary values use decimal columns, and lookup/uniqueness constraints are defined in migrations.
-- Transaction scoping: funding, withdrawal, and transfer each run in a single Knex transaction; transfer debits, credits, and transaction logs commit or roll back together.
-
-## Deployment Guide
-
-Suitable platforms include Render, Railway, and Fly.io.
-
-1. Provision a MySQL database.
-2. Set all variables from `.env.example` in the platform dashboard.
-3. For hosted MySQL providers that give a single connection string, set `DATABASE_URL`.
-4. Free Render build command: `npm install --include=dev && npm run build && npm run migrate`
-5. Paid platforms with release/pre-deploy hooks can run migrations as the release command: `npm run migrate`
-6. Start command: `npm start`
-
-Expected deployed URL format:
-
-```txt
-https://<candidate-name>-lendsqr-be-test.<platform-domain>
-```
-
-For Render blueprints, `render.yaml` is configured with the service name:
-
-```txt
-bhnprksh222-lendsqr-be-test
-```
-
-That gives this URL format after deployment:
-
-```txt
-https://bhnprksh222-lendsqr-be-test.onrender.com
-```
+- Swagger documentation: `https://bhnprksh222-lendsqr-be-test.onrender.com`
+- Health check: `https://bhnprksh222-lendsqr-be-test.onrender.com/health`
+- Readiness check: `https://bhnprksh222-lendsqr-be-test.onrender.com/ready`
